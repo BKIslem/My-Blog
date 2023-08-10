@@ -16,16 +16,15 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?user $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?article $article = null;
+    #[ORM\ManyToOne(inversedBy: 'comment')]
+    private ?Post $post = null;
 
     public function getId(): ?int
     {
@@ -37,7 +36,7 @@ class Comment
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(?string $content): self
     {
         $this->content = $content;
 
@@ -56,14 +55,14 @@ class Comment
         return $this;
     }
 
-    public function getArticle(): ?article
+    public function getPost(): ?Post
     {
-        return $this->article;
+        return $this->post;
     }
 
-    public function setArticle(?article $article): self
+    public function setPost(?Post $post): self
     {
-        $this->article = $article;
+        $this->post = $post;
 
         return $this;
     }
