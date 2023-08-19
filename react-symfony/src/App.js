@@ -1,7 +1,7 @@
 
-import Register from './register';
-import Login from './Login';
-import Home from './Home';
+import Register from './components/register';
+import Login from './components/Login';
+import Home from './components/Home';
 import {Routes, Route} from "react-router-dom";
 
 function App() {

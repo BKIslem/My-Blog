@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import AuthContext from "./context/AuthProvider";
+import AuthContext from "../context/AuthProvider";
 
 const Login = () => {
-    const { setAuth } = useContext(AuthContext);
+    //const { setAuth } = useContext(AuthContext);
     const userRef = useRef(null); // Initialize the useRef with null
     const errRef = useRef(null);
 
@@ -20,7 +20,7 @@ const Login = () => {
     useEffect(() => {
         setErrMsg('');
     }, [email, password])
-const roles =["ROLE_USER"];
+// const roles =["ROLE_USER"];
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -34,27 +34,27 @@ const roles =["ROLE_USER"];
             });
         
             const data = await response.json();
+            console.log(data);
             console.log(JSON.stringify(data));
         
-            if (response.ok) {
+            
                 const accessToken = data?.accessToken;
-                const roles = data?.roles;
-                setAuth({ email, password, accessToken });
-                setEmail('');
-                setPassword('');
+                // const roles = response?.data?.roles;
+                // setAuth({ email, password, roles, accessToken });
+                // setEmail('');
+                // setPassword('');
                 setSuccess(true);
-            } else if (response.status === 400) {
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+            } else if (err.response?.status === 400) {
                 setErrMsg('Missing Username or Password');
-            } else if (response.status === 401) {
+            } else if (err.response?.status === 401) {
                 setErrMsg('Unauthorized');
             } else {
                 setErrMsg('Login Failed');
             }
-        } catch (err) {
-            setErrMsg('No Server Response');
-            if (errRef.current) {
-                errRef.current.focus();
-            }
+            errRef.current.focus();
         }
     }
 
