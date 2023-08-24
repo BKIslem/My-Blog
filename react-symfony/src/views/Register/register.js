@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import './register.css';
+
 
 const USER_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -59,7 +61,10 @@ const Register = () => {
             const newUser = {
                 email: email,
                 password: password,
-                roles: ["ROLE_USER"]// Valeur par défaut
+                roles: ["ROLE_USER"],// Valeur par défaut
+                comments: [],
+                posts: [],
+                name: email
             };
     
             const response = await fetch('http://localhost:8000/api/users', {
@@ -95,22 +100,22 @@ const Register = () => {
         <>
             {success ? (
                 <section>
-                    <h1>Success!</h1>
+                    <h1 className="text-center text-white text-2xl">Success!</h1>
                     <p>
-                        <a href="#">Sign In</a>
+                        <a href="http://localhost:3000/login" >Log In</a>
                     </p>
                 </section>
             ) : (
-                <section>
+                <section className="container mx-auto px-20">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Register</h1>
+                    <h1 className="text-center text-white text-2xl">Register</h1>
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="Email">
                             Email:
                             <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validName || !email ? "hide" : "invalid"} />
                         </label>
-                        <input
+                        <input className='text-black-600'
                             type="email"
                             id="Email"
                             ref={userRef}
@@ -136,7 +141,7 @@ const Register = () => {
                             <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validPwd || !password ? "hide" : "invalid"} />
                         </label>
-                        <input
+                        <input className='text-black-600'
                             type="password"
                             id="password"
                             onChange={(e) => setPwd(e.target.value)}
@@ -160,7 +165,7 @@ const Register = () => {
                             <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
                         </label>
-                        <input
+                        <input className='text-black-600'
                             type="password"
                             id="confirm_pwd"
                             onChange={(e) => setMatchPwd(e.target.value)}
@@ -176,13 +181,13 @@ const Register = () => {
                             Must match the first password input field.
                         </p>
 
-                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+                        <button disabled={!validName || !validPwd || !validMatch ? true : false} className="text-white">Create an account</button>
                     </form>
-                    <p>
+                    <p className="text-white">
                         Already registered?<br />
                         <span className="line">
                             {/*put router link here*/}
-                            <a href="http://localhost:3000/login">Sign In</a>
+                            <a href="http://localhost:3000/login" >Sign In</a>
                         </span>
                     </p>
                 </section>

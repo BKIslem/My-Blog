@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import AuthContext from "../context/AuthProvider";
+import { useNavigate } from 'react-router-dom';
+import './login.css';
 
 const Login = () => {
     //const { setAuth } = useContext(AuthContext);
@@ -10,6 +11,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (userRef.current) {
@@ -30,20 +32,23 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                withCredentials: true,
                 body: JSON.stringify({ email, password }),
             });
-        
+            
             const data = await response.json();
             console.log(data);
             console.log(JSON.stringify(data));
         
             
-                const accessToken = data?.accessToken;
-                // const roles = response?.data?.roles;
+                const accessToken = data?.token;
+                const roles = response?.data?.roles;
+                 localStorage.setItem('access_token', accessToken);
                 // setAuth({ email, password, roles, accessToken });
                 // setEmail('');
                 // setPassword('');
                 setSuccess(true);
+                navigate('/dashboard');
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
@@ -57,24 +62,18 @@ const Login = () => {
             errRef.current.focus();
         }
     }
-
+    
     return (
         <>
             {success ? (
-                <section>
-                    <h1>You are logged in!</h1>
-                    <br />
-                    <p>
-                        <a href="/">Go to Home</a>
-                    </p>
-                </section>
+                <p>Redirecting...</p>
             ) : (
-                <section>
+                <section className="container mx-auto px-20">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Sign In</h1>
+                    <h1 className='text-center text-white text-2xl'><strong>Sign In</strong></h1>
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="email">Email:</label>
-                        <input
+                        <input className='text-black-600'
                             type="email"
                             id="email"
                             ref={userRef}
@@ -85,16 +84,16 @@ const Login = () => {
                         />
 
                         <label htmlFor="password">Password:</label>
-                        <input
+                        <input className='text-black-600'
                             type="password"
                             id="password"
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                             required
                         />
-                        <button>Sign In</button>
+                        <button className='text-white'>Sign In</button>
                     </form>
-                    <p>
+                    <p className='text-white'>
                         Need an Account?<br />
                         <span className="line">
                             <a href="/register">Sign Up</a>

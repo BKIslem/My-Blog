@@ -32,11 +32,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Comment::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Post::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
     private Collection $posts;
+
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
     public function __construct()
     {
@@ -62,7 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
+     * A visual identifier that represents this User.
      *
      * @see UserInterface
      */
@@ -77,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+        // guarantee every User at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -105,17 +108,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
     #[ORM\PrePersist()]
-   public function prePersist(): void
-   {
-       $this->password = password_hash($this->password, PASSWORD_BCRYPT);
-   }
+    public function prePersist(): void
+    {
+        if ($this->password) {
+            $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+        }
+    }
 
     /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // If you store any temporary, sensitive data on the User, clear it here
         // $this->plainPassword = null;
     }
 
@@ -175,6 +180,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $post->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getname(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setname(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
