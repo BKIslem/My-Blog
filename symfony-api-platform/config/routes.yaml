@@ -11,3 +11,4 @@ controllers:
 api_doc:
     path: /
     controller: api_platform.swagger_ui.action
+

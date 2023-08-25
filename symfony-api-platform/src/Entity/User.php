@@ -1,44 +1,99 @@
 <?php
 
 namespace App\Entity;
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\State\GetMeStateProvider;
+use APP\Entity\Post as PostEntity;
+use App\Repository\UserRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post AS MetaDataPost;
+use ApiPlatform\Symfony\Messenger\Processor;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\LifecycleCallbacks;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    security: "is_granted('ROLE_USER')",
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
+#[GetCollection(
+    security: "is_granted('ROLE_ADMIN')",
+    normalizationContext: ['groups' => ['UsersCollection']],//normalizationcontext pour recevoir (read) une requet
+)]
+#[Get(
+    security: "is_granted('ROLE_ADMIN')", 
+    normalizationContext: ['groups' => ['UsersCollection']],
+)]
+#[MetaDataPost(
+     security: "is_granted('PUBLIC_ACCESS')",
+      denormalizationContext: ['groups' => ['AddUsers']],//dormalizationcontext pour envoyer (write) une requet
+     
+)]
+#[Get(
+    name:'get_me',
+    uriTemplate:'/users-me',
+    provider:GetMeStateProvider::class,
+    normalizationContext: ['groups' => ['Me']],
+
+)]
+#[Put(
+    security: "is_granted('ROLE_ADMIN')", 
+    denormalizationContext: ['groups' => ['AddUsers']],
+)]
+#[Patch(
+    security: "is_granted('ROLE_ADMIN')", 
+    denormalizationContext: ['groups' => ['AddUsers']],
+)]
+#[Delete(
+    security: "is_granted('ROLE_ADMIN')",
+    denormalizationContext: ['groups' => ['AddUsers']], 
+)]
 #[ORM\HasLifecycleCallbacks()]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private ?string $email = null;
 
+
     #[ORM\Column]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['Me','AddUsers'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private Collection $posts;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['UsersCollection','Me','AddUsers'])]
     private ?string $name = null;
 
     public function __construct()
@@ -162,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->posts;
     }
 
-    public function addPost(Post $post): self
+    public function addPost(PostEntity $post): self
     {
         if (!$this->posts->contains($post)) {
             $this->posts->add($post);
@@ -172,7 +227,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removePost(PostEntity $post): self
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
@@ -184,12 +239,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getname(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setname(string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
