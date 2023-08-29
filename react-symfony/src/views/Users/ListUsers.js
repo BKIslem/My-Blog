@@ -2,8 +2,8 @@ import Nav from "../../components/Navbar/Nav";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const Dashboard = () => {
-    const [userme, setMe] = useState();
+const ListUsers = () => {
+    const [users, setUsers] = useState();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -11,7 +11,7 @@ const Dashboard = () => {
         // let isMounted = true;
         const controller = new AbortController();
 
-        const getMe = async () => {
+        const getUsers = async () => {
           try {
               const token = localStorage.getItem('access_token');
               if (!token) {
@@ -19,7 +19,7 @@ const Dashboard = () => {
                   navigate('/login');
               }
       
-              const response = await fetch('http://localhost:8000/api/users-me', {
+              const response = await fetch('http://localhost:8000/api/users', {
                   method: 'GET',
                   headers: {
                       'Content-Type': 'application/json',
@@ -28,13 +28,13 @@ const Dashboard = () => {
               });
       
               if (!response.ok) {
-                  throw new Error('Failed to fetch me');
+                  throw new Error('Failed to fetch users');
               }
       
               const responseData = await response.json(); 
               console.log(responseData);
-              setMe(responseData);
-              
+              setUsers(responseData["hydra:member"]);
+              // console.log(responseData["hydra:member"]);
           } catch (err) {
               console.error(err);
               navigate('/login');
@@ -42,7 +42,7 @@ const Dashboard = () => {
           }
       }
 
-        getMe();
+        getUsers();
         return () => {
           // isMounted = false;
           controller.abort();
@@ -53,12 +53,15 @@ const Dashboard = () => {
               <Nav />
               <div className="">
     <article className=" text-white">
-        <h2>Your Profile</h2>
-        {userme
+        <h2>Users List</h2>
+        {users?.length
             ? (
                 <ul>
-                      <li/>User Name : {userme.name }<li/>
-                       <li>Adresse Email : {userme.email}</li>
+                    {users.map((user, i) => (
+                      <p key={i}>User Name : {user?.name } Adresse Email : {user?.email}</p>
+                      
+
+                    ))}
                 </ul>
             ) 
             : <p>No users to display</p>
@@ -70,4 +73,4 @@ const Dashboard = () => {
             </>
             );
         };
-export default Dashboard;
+export default ListUsers;

@@ -8,6 +8,7 @@ import Register from "./views/Register/register";
 import Login from "./views/Login/Login";
 import Home from "./views/Home/Home";
 import Dashboard from "./views/Dashboard/dashboard";
+import ListUsers from "./views/Users/ListUsers";
 const App = () => {
   return (
     <>
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/users" element={<ListUsers />} />
         </Routes>
         {/* <Register/> */}
 

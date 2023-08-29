@@ -3,8 +3,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Users', href: '#users', current: false },
+  { name: 'Dashboard', href: '/dashboard', current: true },
+  { name: 'Users', href: '/users', current: false },
   { name: 'Add Posts', href: '#', current: false },
   { name: 'Remove Comments', href: '#', current: false },
 ]
