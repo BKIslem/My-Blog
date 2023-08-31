@@ -9,7 +9,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         // let isMounted = true;
-        const controller = new AbortController();
+        // const controller = new AbortController();
 
         const getMe = async () => {
           try {
@@ -45,27 +45,32 @@ const Dashboard = () => {
         getMe();
         return () => {
           // isMounted = false;
-          controller.abort();
+        //   controller.abort();
       }
   }, [])
           return (
             <>
               <Nav />
-              <div className="">
+              <section className="container mx-auto px-20">
     <article className=" text-white">
         <h2>Your Profile</h2>
         {userme
             ? (
                 <ul>
-                      <li/>User Name : {userme.name }<li/>
-                       <li>Adresse Email : {userme.email}</li>
-                </ul>
+                <li>User Name : {userme.name}</li>
+                <li>Adresse Email : {userme.email}</li>
+                {userme.roles.includes('ROLE_ADMIN') && userme.roles.includes('ROLE_USER') ? (
+                    <li>Welcome Queen Islem</li>
+                ) : (
+                    <li>You are a loser user</li>
+                )}
+            </ul>
             ) 
             : <p>No users to display</p>
         }
         
     </article>
-</div>
+    </section>
             
             </>
             );

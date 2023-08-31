@@ -37,7 +37,8 @@ const ListUsers = () => {
               // console.log(responseData["hydra:member"]);
           } catch (err) {
               console.error(err);
-              navigate('/login');
+              
+            //   navigate('/login');
               // navigate('/login', { state: { from: location }, replace: true });
           }
       }
@@ -51,7 +52,7 @@ const ListUsers = () => {
           return (
             <>
               <Nav />
-              <div className="">
+              <section className="container mx-auto px-20">
     <article className=" text-white">
         <h2>Users List</h2>
         {users?.length
@@ -64,11 +65,11 @@ const ListUsers = () => {
                     ))}
                 </ul>
             ) 
-            : <p>No users to display</p>
+            : <h1>You don't have permission to go thers </h1>
         }
         
     </article>
-</div>
+</section>
             
             </>
             );
