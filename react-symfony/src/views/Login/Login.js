@@ -70,7 +70,7 @@ const Login = () => {
             ) : (
                 <section className="container mx-auto px-20">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1 className='text-center text-white text-2xl'><strong>Sign In</strong></h1>
+                    <h1 className='text-center text-white text-2xl'><strong>Log In</strong></h1>
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="email">Email:</label>
                         <input className='text-black-600'
@@ -91,7 +91,7 @@ const Login = () => {
                             value={password}
                             required
                         />
-                        <button className='text-white'>Sign In</button>
+                        <button className='text-white'>log In</button>
                     </form>
                     <p className='text-white'>
                         Need an Account?<br />

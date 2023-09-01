@@ -20,6 +20,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Rollerworks\Component\PasswordStrength\Validator\Constraints as RollerworksPassword;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
@@ -77,12 +78,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['UsersCollection','Me','AddUsers'])]
     private array $roles = [];
 
+    
+
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
     #[Groups(['Me','AddUsers'])]
+    /**
+    * @RollerworksPassword\PasswordRequirements(requireLetters=true, requireNumbers=true, requireCaseDiff=true)
+    */
     private ?string $password = null;
+    
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
     #[Groups(['UsersCollection','Me','AddUsers'])]
@@ -151,6 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
+    
     public function getPassword(): string
     {
         return $this->password;
@@ -162,6 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
     #[ORM\PrePersist()]
     public function prePersist(): void
     {

@@ -52,11 +52,12 @@ const ListUsers = () => {
           return (
             <>
               <Nav />
-              <section className="container mx-auto px-20">
-    <article className=" text-white">
-        <h2>Users List</h2>
+             
         {users?.length
             ? (
+                <section className="container mx-auto px-20">
+                <article className=" text-white">
+                    <h2>Users List</h2>
                 <ul>
                     {users.map((user, i) => (
                       <p key={i}>User Name : {user?.name } Adresse Email : {user?.email}</p>
@@ -64,12 +65,14 @@ const ListUsers = () => {
 
                     ))}
                 </ul>
-            ) 
-            : <h1>You don't have permission to go thers </h1>
+                </article>
+                </section>
+            ) :<section className="container mx-auto px-20">
+            <h1 className="text-center text-white text-2xl">You don't have permission to go thers </h1>
+            </section>
         }
         
-    </article>
-</section>
+   
             
             </>
             );
